@@ -49,7 +49,7 @@ class PayslipService {
     return '${parts.join(' ')} Only';
   }
 
-  static Future<List<int>> build(Employee e, Payroll p) async {
+  static Future<Uint8List> build(Employee e, Payroll p) async {
     final pdf = pw.Document(
       title: 'Salary Slip ${e.employeeId} ${p.month}',
       author: 'KAPCO Payroll',
@@ -342,7 +342,9 @@ class PayslipService {
 
   static Future<void> share(Employee e, Payroll p) async {
     final file = await save(e, p);
-    await Share.shareXFiles([XFile(file.path)],
-        text: 'KAPCO salary slip for ${p.month}');
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile(file.path)],
+      text: 'KAPCO salary slip for ${p.month}',
+    ));
   }
 }
