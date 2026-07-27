@@ -379,7 +379,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         return RefreshIndicator(onRefresh: () async => setState(() {}),
           child: ListView.separated(padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
             itemCount: s.data!.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 8),
+            separatorBuilder: (context, index) => const SizedBox(height: 8),
             itemBuilder: (_, i) {
               final e = s.data![i];
               return Card(child: ListTile(
@@ -422,13 +422,32 @@ class _EmployeeFormState extends State<EmployeeForm> {
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: const Text('New Employee'),
-    content: SizedBox(width: 600, child: Form(key: form,
-      child: SingleChildScrollView(child: Wrap(spacing: 10, runSpacing: 10,
-        children: List.generate(labels.length, (i) => SizedBox(width: 275,
-          child: TextFormField(controller: ctrls[i],
-            keyboardType: i == 12 ? TextInputType.number : null,
-            validator: i < 2 ? (v) => v == null || v.trim().isEmpty ? 'Required' : null : null,
-            decoration: InputDecoration(labelText: labels[i]))))))),
+    content: SizedBox(
+      width: 600,
+      child: Form(
+        key: form,
+        child: SingleChildScrollView(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(
+              labels.length,
+              (i) => SizedBox(
+                width: 275,
+                child: TextFormField(
+                  controller: ctrls[i],
+                  keyboardType: i == 12 ? TextInputType.number : null,
+                  validator: i < 2
+                      ? (v) => v == null || v.trim().isEmpty ? 'Required' : null
+                      : null,
+                  decoration: InputDecoration(labelText: labels[i]),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
     actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
       FilledButton(onPressed: save, child: const Text('Save Employee'))],
   );
@@ -596,7 +615,7 @@ class _UserFormState extends State<UserForm> {
       TextField(controller: password, obscureText: true,
           decoration: const InputDecoration(labelText: 'Temporary Password')),
       const SizedBox(height: 10),
-      DropdownButtonFormField(value: role, items: ['HR','Payroll Officer','Manager','Auditor','Employee']
+      DropdownButtonFormField(initialValue: role, items: ['HR','Payroll Officer','Manager','Auditor','Employee']
           .map((x) => DropdownMenuItem(value: x, child: Text(x))).toList(),
           onChanged: (v) => setState(() => role = v!),
           decoration: const InputDecoration(labelText: 'Role')),
