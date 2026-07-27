@@ -8,19 +8,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
+      - name: Show Flutter environment
+        run: flutter doctor -v
+
       - name: Generate Android platform files
         run: flutter create --platforms android --org pk.com.kapco .
-      - run: flutter pub get
-      - run: flutter analyze --no-fatal-infos
-      - run: flutter test
-      - run: flutter build apk --release
-      - uses: actions/upload-artifact@v4
+
+      - name: Resolve clean dependencies
+        run: |
+          flutter clean
+          rm -f pubspec.lock
+          flutter pub get
+          flutter pub deps
+
+      - name: Analyze source
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build release APK
+        run: flutter build apk --release --no-pub
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
         with:
           name: KAPCO-Payroll-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
