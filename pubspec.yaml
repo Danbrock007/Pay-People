@@ -12,18 +12,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   sqflite: ^2.4.2
   path: ^1.9.1
-  path_provider: ^2.1.5
   intl: ^0.20.2
   crypto: ^3.0.6
   pdf: ^3.11.3
   printing: ^5.14.2
-  share_plus: ^11.0.0
-
-# jni 1.0.1 currently fails during Android Gradle configuration because its
-# Kotlin extension is evaluated without a compatible Kotlin Gradle plugin.
-# Keep the known-compatible release until that upstream package is corrected.
-dependency_overrides:
-  jni: 0.15.2
 
 dev_dependencies:
   flutter_test:
