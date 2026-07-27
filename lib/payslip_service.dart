@@ -1,11 +1,8 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:share_plus/share_plus.dart';
 import 'models.dart';
 
 class PayslipService {
@@ -331,21 +328,13 @@ class PayslipService {
     }
   }
 
-  static Future<File> save(Employee e, Payroll p) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/Salary_Slip_${e.employeeId}_${p.month}.pdf');
-    await file.writeAsBytes(await build(e, p), flush: true);
-    return file;
-  }
-
   static Future<void> printSlip(Employee e, Payroll p) async =>
       Printing.layoutPdf(onLayout: (_) => build(e, p));
 
   static Future<void> share(Employee e, Payroll p) async {
-    final file = await save(e, p);
-    await SharePlus.instance.share(ShareParams(
-      files: [XFile(file.path)],
-      text: 'KAPCO salary slip for ${p.month}',
-    ));
+    await Printing.sharePdf(
+      bytes: await build(e, p),
+      filename: 'KAPCO_Salary_Slip_${e.employeeId}_${p.month}.pdf',
+    );
   }
 }
